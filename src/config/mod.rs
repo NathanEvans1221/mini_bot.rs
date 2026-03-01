@@ -80,3 +80,37 @@ impl Config {
         Self::config_dir().join("config.toml")
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_default_config() {
+        let config = Config::default();
+        assert_eq!(config.version, "1.0");
+        assert_eq!(config.default_provider, "minimax");
+        assert_eq!(config.gateway.port, 3000);
+        assert_eq!(config.agent.temperature, 0.7);
+    }
+
+    #[test]
+    fn test_config_save_load() {
+        let temp_dir = TempDir::new().unwrap();
+        let path = temp_dir.path().join("config.toml");
+
+        let config = Config::default();
+        config.save(&path).unwrap();
+
+        let loaded = Config::load(&path).unwrap();
+        assert_eq!(loaded.version, config.version);
+        assert_eq!(loaded.default_provider, config.default_provider);
+    }
+
+    #[test]
+    fn test_config_dir() {
+        let dir = Config::config_dir();
+        assert!(dir.to_string_lossy().len() > 0);
+    }
+}

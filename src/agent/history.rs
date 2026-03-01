@@ -35,3 +35,76 @@ impl History {
         self.messages.clear();
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_history_new() {
+        let history = History::new(10);
+        assert!(history.messages().is_empty());
+    }
+
+    #[test]
+    fn test_history_add_message() {
+        let mut history = History::new(10);
+        history.add_message(Message {
+            role: "user".to_string(),
+            content: "Hello".to_string(),
+        });
+        assert_eq!(history.messages().len(), 1);
+    }
+
+    #[test]
+    fn test_history_max_messages() {
+        let mut history = History::new(2);
+        history.add_message(Message {
+            role: "user".to_string(),
+            content: "Hello".to_string(),
+        });
+        history.add_message(Message {
+            role: "assistant".to_string(),
+            content: "Hi".to_string(),
+        });
+        history.add_message(Message {
+            role: "user".to_string(),
+            content: "How are you?".to_string(),
+        });
+        assert_eq!(history.messages().len(), 2);
+    }
+
+    #[test]
+    fn test_history_clear() {
+        let mut history = History::new(10);
+        history.add_message(Message {
+            role: "user".to_string(),
+            content: "Hello".to_string(),
+        });
+        history.clear();
+        assert!(history.messages().is_empty());
+    }
+
+    #[test]
+    fn test_history_preserve_system_message() {
+        let mut history = History::new(2);
+        history.add_message(Message {
+            role: "system".to_string(),
+            content: "You are a helpful assistant".to_string(),
+        });
+        history.add_message(Message {
+            role: "user".to_string(),
+            content: "Hello".to_string(),
+        });
+        history.add_message(Message {
+            role: "assistant".to_string(),
+            content: "Hi".to_string(),
+        });
+        history.add_message(Message {
+            role: "user".to_string(),
+            content: "How are you?".to_string(),
+        });
+        let msgs = history.messages();
+        assert!(msgs.iter().any(|m| m.role == "system"));
+    }
+}

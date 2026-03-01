@@ -43,3 +43,54 @@ pub trait Provider: Send + Sync {
 
     async fn health_check(&self) -> Result<(), ProviderError>;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_message_creation() {
+        let message = Message {
+            role: "user".to_string(),
+            content: "Hello".to_string(),
+        };
+        assert_eq!(message.role, "user");
+        assert_eq!(message.content, "Hello");
+    }
+
+    #[test]
+    fn test_tool_call_creation() {
+        let tool_call = ToolCall {
+            name: "shell".to_string(),
+            arguments: r#"{"command": "ls"}"#.to_string(),
+        };
+        assert_eq!(tool_call.name, "shell");
+    }
+
+    #[test]
+    fn test_response_creation() {
+        let response = Response {
+            message: Message {
+                role: "assistant".to_string(),
+                content: "Response content".to_string(),
+            },
+            tool_calls: vec![],
+        };
+        assert!(response.tool_calls.is_empty());
+    }
+
+    #[test]
+    fn test_provider_error_display() {
+        let error = ProviderError::RequestFailed("connection timeout".to_string());
+        assert!(error.to_string().contains("API request failed"));
+        
+        let error = ProviderError::ParseFailed("invalid json".to_string());
+        assert!(error.to_string().contains("Response parse failed"));
+        
+        let error = ProviderError::AuthenticationFailed("invalid key".to_string());
+        assert!(error.to_string().contains("Authentication failed"));
+        
+        let error = ProviderError::QuotaExceeded("limit reached".to_string());
+        assert!(error.to_string().contains("Quota exceeded"));
+    }
+}

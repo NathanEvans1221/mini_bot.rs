@@ -140,3 +140,72 @@ impl Tool for FileTool {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    #[test]
+    fn test_file_tool_default() {
+        let tool = FileTool::new();
+        assert_eq!(tool.name(), "file");
+    }
+
+    #[test]
+    fn test_file_tool_definition() {
+        let tool = FileTool::new();
+        let def = tool.definition();
+        assert_eq!(def.name, "file");
+        assert_eq!(def.arguments.len(), 3);
+    }
+
+    #[tokio::test]
+    async fn test_file_write_and_read() {
+        let temp_dir = TempDir::new().unwrap();
+        let file_path = temp_dir.path().join("test.txt");
+        let file_path_str = file_path.to_string_lossy().to_string();
+        
+        let tool = FileTool::new();
+        
+        let write_result = tool.execute(&serde_json::json!({
+            "operation": "write",
+            "path": file_path_str,
+            "content": "Hello, World!"
+        }).to_string()).await;
+        assert!(write_result.unwrap().success);
+        
+        let read_result = tool.execute(&serde_json::json!({
+            "operation": "read",
+            "path": file_path_str
+        }).to_string()).await;
+        let result = read_result.unwrap();
+        assert!(result.success);
+        assert_eq!(result.output, "Hello, World!");
+    }
+
+    #[tokio::test]
+    async fn test_file_exists() {
+        let temp_dir = TempDir::new().unwrap();
+        let file_path = temp_dir.path().join("test.txt");
+        let file_path_str = file_path.to_string_lossy().to_string();
+        
+        std::fs::write(&file_path, "test").unwrap();
+        
+        let tool = FileTool::new();
+        let result = tool.execute(&serde_json::json!({
+            "operation": "exists",
+            "path": file_path_str
+        }).to_string()).await.unwrap();
+        
+        assert!(result.success);
+        assert_eq!(result.output, "true");
+    }
+
+    #[tokio::test]
+    async fn test_file_read_nonexistent() {
+        let tool = FileTool::new();
+        let result = tool.execute(r#"{"operation": "read", "path": "/nonexistent/file.txt"}"#).await.unwrap();
+        assert!(!result.success);
+    }
+}

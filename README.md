@@ -110,6 +110,30 @@ allowed_roots = []
 allowed_commands = []
 ```
 
+## 測試
+
+```bash
+# 執行所有單元測試
+cargo test
+
+# 執行特定模組測試
+cargo test --lib
+cargo test --test integration
+
+# 執行涵蓋率測試（需要先安裝 cargo-llvm-cov）
+cargo install cargo-llvm-cov
+cargo llvm-cov --lcov --output-path lcov.info
+cargo llvm-cov --text
+```
+
+### 涵蓋率報告
+
+涵蓋率報告會顯示各模組的測試覆蓋程度：
+- `src/config/` - 配置管理
+- `src/agent/` - Agent 核心（含歷史管理）
+- `src/providers/` - AI 供應商
+- `src/tools/` - 工具集合（Shell、File）
+
 ## 授權
 
 MIT OR Apache-2.0

@@ -105,3 +105,58 @@ impl Tool for ShellTool {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_shell_tool_default() {
+        let tool = ShellTool::new();
+        assert_eq!(tool.name(), "shell");
+    }
+
+    #[test]
+    fn test_shell_tool_definition() {
+        let tool = ShellTool::new();
+        let def = tool.definition();
+        assert_eq!(def.name, "shell");
+        assert_eq!(def.arguments.len(), 1);
+        assert_eq!(def.arguments[0].name, "command");
+    }
+
+    #[test]
+    fn test_command_allowlist_empty() {
+        let tool = ShellTool::new();
+        assert!(tool.is_command_allowed("ls"));
+    }
+
+    #[test]
+    fn test_command_allowlist_restricted() {
+        let tool = ShellTool::with_allowed(vec!["ls".to_string(), "echo".to_string()]);
+        assert!(tool.is_command_allowed("ls -la"));
+        assert!(tool.is_command_allowed("echo hello"));
+        assert!(!tool.is_command_allowed("rm -rf /"));
+    }
+
+    #[tokio::test]
+    async fn test_shell_execute_echo() {
+        let tool = ShellTool::new();
+        let result = tool.execute(r#"{"command": "echo hello"}"#).await;
+        assert!(result.unwrap().success);
+    }
+
+    #[tokio::test]
+    async fn test_shell_execute_invalid_args() {
+        let tool = ShellTool::new();
+        let result = tool.execute("invalid json").await;
+        assert!(result.is_err());
+    }
+
+    #[tokio::test]
+    async fn test_shell_execute_missing_command() {
+        let tool = ShellTool::new();
+        let result = tool.execute(r#"{"other": "value"}"#).await;
+        assert!(result.is_err());
+    }
+}
