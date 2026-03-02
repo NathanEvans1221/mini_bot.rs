@@ -2,6 +2,7 @@ use async_trait::async_trait;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[allow(dead_code)]
 pub struct MemoryEntry {
     pub id: String,
     pub category: String,
@@ -12,6 +13,7 @@ pub struct MemoryEntry {
 }
 
 #[async_trait]
+#[allow(dead_code)]
 pub trait Memory: Send + Sync {
     async fn store(&self, entry: &MemoryEntry) -> Result<(), String>;
     async fn get(&self, id: &str) -> Result<Option<MemoryEntry>, String>;

@@ -5,6 +5,7 @@ edition = "2021"
 authors = ["MiniBot Team"]
 license = "MIT OR Apache-2.0"
 description = "MiniBot MVP - A minimal Rust AI Agent runtime"
+rust-version = "1.87"
 
 [lib]
 name = "mini_bot_rs"
@@ -13,8 +14,6 @@ path = "src/lib.rs"
 [[bin]]
 name = "mini_bot_rs"
 path = "src/main.rs"
-
-rust-version = "1.87"
 
 [dependencies]
 

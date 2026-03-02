@@ -3,9 +3,8 @@ mod history;
 use crate::config::Config;
 use crate::memory::SqliteMemory;
 use crate::providers::create_provider;
-use crate::providers::traits::{Message, Provider, ToolCall};
-use crate::tools::{FileTool, ShellTool};
-use crate::tools::traits::Tool;
+use crate::providers::{Message, Provider, ToolCall};
+use crate::tools::{FileTool, ShellTool, Tool, ToolResult};
 use anyhow::Result;
 use std::sync::Arc;
 
@@ -13,7 +12,9 @@ pub struct Agent {
     provider: Arc<dyn Provider>,
     tools: Vec<Arc<dyn Tool>>,
     history: history::History,
+    #[allow(dead_code)]
     memory: Option<SqliteMemory>,
+    #[allow(dead_code)]
     config: Config,
 }
 
@@ -24,7 +25,7 @@ impl Agent {
             config.api_key.clone(),
             config.default_model.clone(),
             config.agent.temperature,
-        )?;
+        ).map_err(anyhow::Error::msg)?;
 
         let tools: Vec<Arc<dyn Tool>> = vec![
             Arc::new(ShellTool::new()),
@@ -61,7 +62,7 @@ impl Agent {
 
         if !response.tool_calls.is_empty() {
             for tool_call in &response.tool_calls {
-                let result = self.execute_tool(tool_call).await?;
+                let result = self.execute_tool(tool_call).await.map_err(anyhow::Error::msg)?;
                 
                 self.history.add_message(Message {
                     role: "tool".to_string(),
@@ -84,7 +85,7 @@ impl Agent {
         Ok(response.message.content)
     }
 
-    async fn execute_tool(&self, tool_call: &ToolCall) -> Result<crate::tools::traits::ToolResult, String> {
+    async fn execute_tool(&self, tool_call: &ToolCall) -> Result<ToolResult, String> {
         let tool = self
             .tools
             .iter()

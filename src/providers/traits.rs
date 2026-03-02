@@ -26,13 +26,16 @@ pub enum ProviderError {
     #[error("Response parse failed: {0}")]
     ParseFailed(String),
     #[error("Authentication failed: {0}")]
+    #[allow(dead_code)]
     AuthenticationFailed(String),
     #[error("Quota exceeded: {0}")]
+    #[allow(dead_code)]
     QuotaExceeded(String),
 }
 
 #[async_trait]
-pub trait Provider: Send + Sync {
+pub trait Provider: Send + Sync + std::fmt::Debug {
+    #[allow(dead_code)]
     fn name(&self) -> &str;
 
     async fn chat(
@@ -41,6 +44,7 @@ pub trait Provider: Send + Sync {
         tools: Option<Vec<serde_json::Value>>,
     ) -> Result<Response, ProviderError>;
 
+    #[allow(dead_code)]
     async fn health_check(&self) -> Result<(), ProviderError>;
 }
 

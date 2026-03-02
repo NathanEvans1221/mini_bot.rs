@@ -1,4 +1,5 @@
 use mini_bot_rs::Config;
+use mini_bot_rs::tools::Tool;
 
 #[test]
 fn test_config_default() {
@@ -40,7 +41,7 @@ async fn test_shell_tool_available() {
 
 #[test]
 fn test_tools_module_exports() {
-    use mini_bot_rs::tools::{FileTool, ShellTool, Tool, ToolDefinition};
+    use mini_bot_rs::tools::{FileTool, ShellTool, Tool};
     
     let shell = ShellTool::new();
     assert_eq!(shell.name(), "shell");

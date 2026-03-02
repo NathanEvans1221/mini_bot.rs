@@ -2,6 +2,7 @@ use super::traits::{Tool, ToolArgument, ToolDefinition, ToolResult};
 use async_trait::async_trait;
 use std::process::Command;
 
+#[derive(Debug)]
 pub struct ShellTool {
     allowed_commands: Vec<String>,
 }
@@ -13,6 +14,7 @@ impl ShellTool {
         }
     }
 
+    #[allow(dead_code)]
     pub fn with_allowed(commands: Vec<String>) -> Self {
         Self { allowed_commands: commands }
     }

@@ -24,7 +24,7 @@ pub struct ToolDefinition {
 }
 
 #[async_trait]
-pub trait Tool: Send + Sync {
+pub trait Tool: Send + Sync + std::fmt::Debug {
     fn name(&self) -> &str;
     fn definition(&self) -> ToolDefinition;
     async fn execute(&self, arguments: &str) -> Result<ToolResult, String>;

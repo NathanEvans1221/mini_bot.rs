@@ -4,4 +4,4 @@ mod traits;
 
 pub use file::FileTool;
 pub use shell::ShellTool;
-pub use traits::{Tool, ToolDefinition, ToolResult};
+pub use traits::{Tool, ToolResult};

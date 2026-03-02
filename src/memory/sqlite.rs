@@ -6,10 +6,12 @@ use std::path::PathBuf;
 use std::sync::Arc;
 
 pub struct SqliteMemory {
+    #[allow(dead_code)]
     conn: Arc<Mutex<Connection>>,
 }
 
 impl SqliteMemory {
+    #[allow(dead_code)]
     pub fn new(path: PathBuf) -> Result<Self, String> {
         let conn = Connection::open(&path)
             .map_err(|e| format!("Failed to open database: {}", e))?;

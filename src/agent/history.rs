@@ -1,4 +1,4 @@
-use crate::providers::traits::Message;
+use crate::providers::Message;
 
 pub struct History {
     messages: Vec<Message>,
@@ -18,9 +18,7 @@ impl History {
 
         while self.messages.len() > self.max_messages {
             if let Some(pos) = self.messages.iter().position(|m| m.role != "system") {
-                if pos > 0 {
-                    self.messages.remove(pos);
-                }
+                self.messages.remove(pos);
             } else {
                 break;
             }
@@ -31,6 +29,7 @@ impl History {
         &self.messages
     }
 
+    #[allow(dead_code)]
     pub fn clear(&mut self) {
         self.messages.clear();
     }

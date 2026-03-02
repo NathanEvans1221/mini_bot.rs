@@ -14,6 +14,7 @@ struct MiniMaxRequest {
 #[derive(Debug, Deserialize)]
 struct MiniMaxResponse {
     choices: Vec<Choice>,
+    #[allow(dead_code)]
     usage: Option<Usage>,
 }
 
@@ -25,6 +26,7 @@ struct Choice {
 #[derive(Debug, Deserialize)]
 struct Usage {
     #[serde(rename = "total_tokens")]
+    #[allow(dead_code)]
     total_tokens: Option<i32>,
 }
 
@@ -38,8 +40,10 @@ struct ResponseMessage {
 
 #[derive(Debug, Deserialize, Default)]
 struct ToolCallDelta {
+    #[allow(dead_code)]
     id: Option<String>,
     #[serde(rename = "type")]
+    #[allow(dead_code)]
     type_: Option<String>,
     function: Option<FunctionDelta>,
 }
@@ -50,6 +54,7 @@ struct FunctionDelta {
     arguments: Option<String>,
 }
 
+#[derive(Debug)]
 pub struct MiniMaxProvider {
     client: Client,
     api_key: String,
