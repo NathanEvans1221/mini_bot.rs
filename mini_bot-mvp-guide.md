@@ -1461,16 +1461,16 @@ fn load_config() -> Result<Config> {
 
 完成以下項目即完成 MVP：
 
-- [ ] 建立 Cargo.toml 依賴配置
-- [ ] 實作 CLI 框架（使用 clap）
-- [ ] 實作配置管理系統
-- [ ] 實作 MiniMax Provider
-- [ ] 實作 Shell Tool
-- [ ] 實作 File Tool
-- [ ] 實作 SQLite Memory 後端
-- [ ] 實作 Agent 主迴圈
+- [x] 建立 Cargo.toml 依賴配置
+- [x] 實作 CLI 框架（使用 clap）
+- [x] 實作配置管理系統
+- [x] 實作 MiniMax Provider
+- [x] 實作 Shell Tool
+- [x] 實作 File Tool
+- [x] 實作 SQLite Memory 後端
+- [x] 實作 Agent 主迴圈
 - [ ] 實作 Gateway 伺服器（可選）
-- [ ] 通過編譯和基本測試
+- [x] 通過編譯和基本測試
 
 ---
 

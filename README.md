@@ -24,7 +24,7 @@ mini_bot.rs config    # 配置管理
 
 - **Shell Tool** - 執行系統命令
 - **File Tool** - 檔案讀寫操作
-- **Web Fetch Tool** - 擷取網頁內容
+- ~~Web Fetch Tool~~ - 擷取網頁內容（籌備中）
 
 ### 支援的 AI 模型供應商
 
