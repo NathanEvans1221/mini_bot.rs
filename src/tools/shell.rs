@@ -37,7 +37,7 @@ impl ShellTool {
 
     fn is_command_allowed(&self, cmd: &str) -> bool {
         if self.allowed_commands.is_empty() {
-            return true;
+            return false;
         }
         self.allowed_commands
             .iter()
@@ -173,7 +173,7 @@ mod tests {
     #[test]
     fn test_command_allowlist_empty() {
         let tool = ShellTool::new();
-        assert!(tool.is_command_allowed("ls"));
+        assert!(!tool.is_command_allowed("ls"));
     }
 
     #[test]
@@ -186,7 +186,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_shell_execute_echo() {
-        let tool = ShellTool::new();
+        let tool = ShellTool::with_allowed(vec!["echo".to_string()]);
         let result = tool.execute(r#"{"command": "echo hello"}"#).await;
         assert!(result.unwrap().success);
     }

@@ -108,8 +108,16 @@ impl Tool for FileTool {
 
         match operation {
             "read" => {
-                let metadata = tokio::fs::metadata(path).await
-                    .map_err(|e| format!("Failed to get file metadata: {}", e))?;
+                let metadata = match tokio::fs::metadata(path).await {
+                    Ok(m) => m,
+                    Err(e) => {
+                        return Ok(ToolResult {
+                            success: false,
+                            output: String::new(),
+                            error: Some(format!("Failed to read file: {}", e)),
+                        });
+                    }
+                };
                 
                 if metadata.len() > self.max_file_size {
                     return Ok(ToolResult {
